@@ -62,6 +62,9 @@ class ActionProviderStore {
 		return $providers;
 	}
 
+	/**
+	 * @return string[]
+	 */
 	private function getServerProviderClasses() {
 		return [
 			EMailProvider::class,

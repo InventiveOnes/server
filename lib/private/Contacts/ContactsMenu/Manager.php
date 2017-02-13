@@ -34,6 +34,10 @@ class Manager {
 	/** @var ActionProviderStore */
 	private $actionProviderStore;
 
+	/**
+	 * @param ContactsStore $store
+	 * @param ActionProviderStore $actionProviderStore
+	 */
 	public function __construct(ContactsStore $store, ActionProviderStore $actionProviderStore) {
 		$this->store = $store;
 		$this->actionProviderStore = $actionProviderStore;
@@ -52,6 +56,9 @@ class Manager {
 		return $entries;
 	}
 
+	/**
+	 * @param IEntry[] $entries
+	 */
 	private function processEntries(array $entries) {
 		$providers = $this->actionProviderStore->getProviders();
 		foreach ($entries as $entry) {

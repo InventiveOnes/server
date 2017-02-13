@@ -41,35 +41,51 @@ class Entry implements IEntry {
 	/** @var IAction[] */
 	private $actions = [];
 
-	/** @param string $id */
+	/**
+	 * @param string $id
+	 */
 	public function setId($id) {
 		$this->id = $id;
 	}
 
-	/** @param string $displayName */
+	/**
+	 * @param string $displayName
+	 */
 	public function setFullName($displayName) {
 		$this->fullName = $displayName;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getFullName() {
 		return $this->fullName;
 	}
 
-	/** @param string $address */
+	/**
+	 * @param string $address
+	 */
 	public function addEMailAddress($address) {
 		$this->emailAddresses[] = $address;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getEMailAddresses() {
 		return $this->emailAddresses;
 	}
 
-	/** @param IAction $action */
+	/**
+	 * @param IAction $action
+	 */
 	public function addAction(IAction $action) {
 		$this->actions[] = $action;
 	}
 
-	/** @return array */
+	/**
+	 * @return array
+	 */
 	public function jsonSerialize() {
 		$topAction = (count($this->actions) > 0) ? reset($this->actions)->jsonSerialize() : null;
 		$otherActions = array_map(function(IAction $action) {

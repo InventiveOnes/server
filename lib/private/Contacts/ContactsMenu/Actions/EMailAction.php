@@ -37,14 +37,23 @@ class EMailAction implements ILinkAction {
 	/** @var string */
 	private $href;
 
+	/**
+	 * @param string $icon absolute URI to an icon
+	 */
 	public function setIcon($icon) {
 		$this->icon = $icon;
 	}
 
+	/**
+	 * @param string $name
+	 */
 	public function setName($name) {
 		$this->name = $name;
 	}
 
+	/**
+	 * @param string $href
+	 */
 	public function setHref($href) {
 		$this->href = $href;
 	}

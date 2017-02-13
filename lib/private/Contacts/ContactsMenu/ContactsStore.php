@@ -33,6 +33,9 @@ class ContactsStore {
 	/** @var IManager */
 	private $manager;
 
+	/**
+	 * @param IManager $manager
+	 */
 	public function __construct(IManager $manager) {
 		$this->manager = $manager;
 	}
@@ -72,7 +75,11 @@ class ContactsStore {
 		return $entry;
 	}
 
-	public function searchContacts() {
+	/**
+	 * @param string $term
+	 * @return IEntry[]
+	 */
+	public function searchContacts($term) {
 		throw new Exception('not implemented yet');
 	}
 
