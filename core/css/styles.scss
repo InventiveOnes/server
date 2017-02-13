@@ -1172,6 +1172,11 @@ span.ui-icon {
 	margin: 8px;
 }
 
+#contactsmenu-contacts {
+	max-height: 300px;
+	overflow-y: auto;
+}
+
 /* ---- TOOLTIPS ---- */
 
 .extra-data {
