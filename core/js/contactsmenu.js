@@ -35,10 +35,11 @@
 			+ '    <h2>' + t('core', 'Could not load your contacts.') + '</h2>'
 			+ '</div>';
 	var CONTENT_TEMPLATE = ''
-			+ '<div>'
-			+ '    <input id="contactsmenu-search" type="search" placeholder="Search contacts …" value="{{searchTerm}}">'
+			+ '<input id="contactsmenu-search" type="search" placeholder="Search contacts …" value="{{searchTerm}}">'
+			+ '<div class="content">'
 			+ '    {{#unless contacts.length}}<div class="emptycontent">' + t('core', 'No contacts found.') + '</div>{{/unless}}'
 			+ '    <div id="contactsmenu-contacts"></div>'
+			+ '    {{#if contactsAppEnabled}}<div class="footer"><a href="{{contactsAppURL}}">' + t('core', 'Show all contacts …') + '</a></div>{{/if}}'
 			+ '</div>';
 	var CONTACT_TEMPLATE = ''
 			+ '<div class="avatar"></div>'
@@ -259,12 +260,14 @@
 		 * @param {string} searchTerm
 		 * @returns {undefined}
 		 */
-		showContacts: function(contacts, searchTerm) {
-			this._contacts = contacts;
+		showContacts: function(viewData, searchTerm) {
+			this._contacts = viewData.contacts;
 			this.render({
 				loading: false,
 				searchTerm: searchTerm,
-				contacts: contacts
+				contacts: viewData.contacts,
+				contactsAppEnabled: viewData.contactsAppEnabled,
+				contactsAppURL: viewData.contactsAppURL
 			});
 		},
 
@@ -366,8 +369,9 @@
 					filter: searchTerm
 				}
 			})).then(function(data) {
-				// Convert to Backbone collection
-				return new ContactCollection(data);
+				// Convert contact entries to Backbone collection
+				data.contacts = new ContactCollection(data.contacts);
+				return data;
 			});
 		},
 

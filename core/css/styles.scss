@@ -1110,6 +1110,16 @@ span.ui-icon {
 		}
 	}
 
+	div.content {
+		max-height: 300px;
+		overflow-y: auto;
+
+		.footer {
+			text-align: center;
+			line-height: 50px;
+		}
+	}
+
 	div.contact {
 		display: flex;
 		position: relative;
@@ -1170,11 +1180,6 @@ span.ui-icon {
 #contactsmenu-search {
 	width: calc(100% - 16px);
 	margin: 8px;
-}
-
-#contactsmenu-contacts {
-	max-height: 300px;
-	overflow-y: auto;
 }
 
 /* ---- TOOLTIPS ---- */
