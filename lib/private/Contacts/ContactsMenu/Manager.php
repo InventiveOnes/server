@@ -52,8 +52,21 @@ class Manager {
 		// TODO: contacts manager does not need a user id
 		$entries = $this->store->getContacts($filter);
 
-		$this->processEntries($entries);
+		$sortedEntries = $this->sortEntries($entries);
+		$topEntries = array_slice($sortedEntries, 0, 25);
+		$this->processEntries($topEntries);
 
+		return $topEntries;
+	}
+
+	/**
+	 * @param IEntry[] $entries
+	 * @return IEntry[]
+	 */
+	private function sortEntries(array $entries) {
+		usort($entries, function(IEntry $entryA, IEntry $entryB) {
+			strcasecmp($entryA->getFullName(), $entryB->getFullName());
+		});
 		return $entries;
 	}
 
