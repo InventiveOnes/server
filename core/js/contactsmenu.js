@@ -30,6 +30,10 @@
 			+ '    <a class="icon-loading"></a>'
 			+ '    <h2>{{loadingText}}</h2>'
 			+ '</div>';
+	var ERROR_TEMPLATE = ''
+			+ '<div class="emptycontent">'
+			+ '    <h2>' + t('core', 'Could not load your contacts.') + '</h2>'
+			+ '</div>';
 	var CONTENT_TEMPLATE = ''
 			+ '<div>'
 			+ '    <input id="contactsmenu-search" type="search" placeholder="Search contacts …" value="{{searchTerm}}">'
@@ -171,6 +175,9 @@
 		_loadingTemplate: undefined,
 
 		/** @type {undefined|function} */
+		_errorTemplate: undefined,
+
+		/** @type {undefined|function} */
 		_contentTemplate: undefined,
 
 		/** @type {undefined|ContactCollection} */
@@ -199,6 +206,17 @@
 		 * @param {object} data
 		 * @returns {string}
 		 */
+		errorTemplate: function(data) {
+			if (!this._errorTemplate) {
+				this._errorTemplate = Handlebars.compile(ERROR_TEMPLATE);
+			}
+			return this._errorTemplate(data);
+		},
+
+		/**
+		 * @param {object} data
+		 * @returns {string}
+		 */
 		contentTemplate: function(data) {
 			if (!this._contentTemplate) {
 				this._contentTemplate = Handlebars.compile(CONTENT_TEMPLATE);
@@ -215,6 +233,7 @@
 		},
 
 		/**
+		 * @param {string} text
 		 * @returns {undefined}
 		 */
 		showLoading: function(text) {
@@ -222,6 +241,16 @@
 			this.render({
 				loading: true,
 				loadingText: text
+			});
+		},
+
+		/**
+		 * @returns {undefined}
+		 */
+		showError: function() {
+			this._contacts = undefined;
+			this.render({
+				error: true
 			});
 		},
 
@@ -244,19 +273,24 @@
 		 * @returns {self}
 		 */
 		render: function(data) {
+			if (!!data.error) {
+				this.$el.html(this.errorTemplate(data));
+				return this;
+			}
 			if (!!data.loading) {
 				this.$el.html(this.loadingTemplate(data));
-			} else {
-				var list = new ContactsListView({
-					collection: data.contacts
-				});
-				list.render();
-				this.$el.html(this.contentTemplate(data));
-				this.$('#contactsmenu-contacts').html(list.$el);
-
-				// Focus search
-				this.$('#contactsmenu-search').focus();
+				return this;
 			}
+
+			var list = new ContactsListView({
+				collection: data.contacts
+			});
+			list.render();
+			this.$el.html(this.contentTemplate(data));
+			this.$('#contactsmenu-contacts').html(list.$el);
+
+			// Focus search
+			this.$('#contactsmenu-search').focus();
 
 			return this;
 		},
@@ -354,9 +388,10 @@
 			self._contactsPromise.then(function(contacts) {
 				self._view.showContacts(contacts, searchTerm);
 			}, function(e) {
+				self._view.showError();
 				console.error('could not load contacts', e);
 			}).then(function() {
-				// Delete promise, so that contactes are fetched again when the
+				// Delete promise, so that contacts are fetched again when the
 				// menu is opened the next time.
 				delete self._contactsPromise;
 			});
