@@ -331,6 +331,10 @@
 				self._view.showContacts(contacts);
 			}, function(e) {
 				console.error('could not load contacts', e);
+			}).then(function() {
+				// Delete promise, so that contactes are fetched again when the
+				// menu is opened the next time.
+				delete self._contactsPromise;
 			});
 		}
 	};
