@@ -24,7 +24,6 @@
 
 namespace OC\Contacts\ContactsMenu;
 
-use OC\Contacts\ContactsMenu\Actions\EMailAction;
 use OCP\Contacts\ContactsMenu\IEntry;
 
 class Manager {
@@ -32,8 +31,12 @@ class Manager {
 	/** @var ContactsStore */
 	private $store;
 
-	public function __construct(ContactsStore $store) {
+	/** @var ActionProviderStore */
+	private $actionProviderStore;
+
+	public function __construct(ContactsStore $store, ActionProviderStore $actionProviderStore) {
 		$this->store = $store;
+		$this->actionProviderStore = $actionProviderStore;
 	}
 
 	/**
@@ -41,21 +44,21 @@ class Manager {
 	 * @return IEntry[]
 	 */
 	public function getEntries($userId) {
+		// TODO: contacts manager does not need a user id
 		$entries = $this->store->getContacts();
 
-		// TODO: contacts manager does not need a user id
-		// TODO: extract to providers
-		foreach ($entries as $entry) {
-			foreach ($entry->getEMailAddresses() as $address) {
-				$action = new EMailAction();
-				$action->setName('Mail'); // TODO: l10n
-				$action->setIcon('icon-mail'); // TODO: absolute path
-				$action->setHref('mailto:' . urlencode($address)); // TODO: meaningful URL
-				$entry->addAction($action);
-			}
-		}
+		$this->processEntries($entries);
 
 		return $entries;
+	}
+
+	private function processEntries(array $entries) {
+		$providers = $this->actionProviderStore->getProviders();
+		foreach ($entries as $entry) {
+			foreach ($providers as $provider) {
+				$provider->process($entry);
+			}
+		}
 	}
 
 }
