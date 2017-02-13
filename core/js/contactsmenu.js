@@ -25,12 +25,18 @@
 (function(OC, $, _, Handlebars) {
 	'use strict';
 
-	var LOADING_TEMPLATE = '<div class="icon-loading"></div>';
-	var CONTENT_TEMPLATE = '<div>'
+	var LOADING_TEMPLATE = ''
+			+ '<div class="emptycontent">'
+			+ '    <a class="icon-loading"></a>'
+			+ '    <h2>{{loadingText}}</h2>'
+			+ '</div>';
+	var CONTENT_TEMPLATE = ''
+			+ '<div>'
 			+ '    <input id="contactsmenu-search" type="search" placeholder="Search contacts …">'
 			+ '    <div id="contactsmenu-contacts"></div>'
 			+ '</div>';
-	var CONTACT_TEMPLATE = '<div class="avatar"></div>'
+	var CONTACT_TEMPLATE = ''
+			+ '<div class="avatar"></div>'
 			+ '<div class="body">'
 			+ '    <div class="full-name">{{contact.fullName}}</div>'
 			+ '    <div class="last-message">{{contact.lastMessage}}</div>'
@@ -210,10 +216,11 @@
 		/**
 		 * @returns {undefined}
 		 */
-		showLoading: function() {
+		showLoading: function(text) {
 			this._contacts = undefined;
 			this.render({
-				loading: true
+				loading: true,
+				loadingText: text
 			});
 		},
 
@@ -334,7 +341,13 @@
 				self._contactsPromise = self._getContacts(searchTerm);
 			}
 
-			self._view.showLoading();
+			if (_.isUndefined(searchTerm)) {
+				self._view.showLoading(t('core', 'Loading your contacts …'));
+			} else {
+				self._view.showLoading(t('core', 'Looking for {term} …', {
+					term: searchTerm
+				}));
+			}
 			self._contactsPromise.then(function(contacts) {
 				self._view.showContacts(contacts);
 			}, function(e) {
