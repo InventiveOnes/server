@@ -22,39 +22,14 @@
  *
  */
 
-namespace OC\Core\Controller;
+namespace OC\Contacts\ContactsMenu;
 
-use OC\Contacts\ContactsMenu\Manager;
-use OCP\AppFramework\Controller;
-use OCP\AppFramework\Http\JSONResponse;
-use OCP\IRequest;
+use Exception;
 
-class ContactsMenuController extends Controller {
+class ProviderStore {
 
-	/** @var Manager */
-	private $manager;
-
-	/** @var string */
-	private $userId;
-
-	/**
-	 * @param IRequest $request
-	 * @param string $UserId
-	 */
-	public function __construct(IRequest $request, $UserId, Manager $manager) {
-		parent::__construct('core', $request);
-		$this->userId = $UserId;
-		$this->manager = $manager;
-	}
-
-	/**
-	 * @NoAdminRequired
-	 *
-	 * @param int $page
-	 * @return JSONResponse
-	 */
-	public function index($page = 0) {
-		return $this->manager->getEntries($this->userId);
+	public function getProviders() {
+		throw new Exception('not implemented');
 	}
 
 }

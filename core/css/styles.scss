@@ -1130,12 +1130,14 @@ span.ui-icon {
 				width: 100%;
 			}
 
-			div.last-message {
+			div.full-name, div.last-message {
 				/* TODO: don't use fixed width */
 				width: 220px;
 				overflow: hidden;
 				white-space: nowrap;
 				text-overflow: ellipsis;
+			}
+			div.last-message {
 				opacity: 0.5;
 			}
 		}

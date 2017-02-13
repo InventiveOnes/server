@@ -32,15 +32,15 @@
 			+ '</div>';
 	var CONTACT_TEMPLATE = '<div class="avatar"></div>'
 			+ '<div class="body">'
-			+ '    <div>{{contact.displayName}}</div>'
+			+ '    <div class="full-name">{{contact.fullName}}</div>'
 			+ '    <div class="last-message">{{contact.lastMessage}}</div>'
 			+ '</div>'
-			+ '<span class="top-action {{contact.topAction.icon}}"></span>'
+			+ '<a class="top-action {{contact.topAction.icon}}" href="{{contact.topAction.hyperlink}}"></a>'
 			+ '<span class="other-actions icon-more"></span>'
 			+ '<div class="popovermenu bubble menu">'
 			+ '    <ul>'
 			+ '        {{#each contact.actions}}'
-			+ '        <li><span class="{{icon}}">{{title}}</span></li>'
+			+ '        <li><span class="{{icon}}"><a href="{{hyperlink}}">{{title}}</a></span></li>'
 			+ '        {{/each}}'
 			+ '        <li><span class="icon-info"><a href="/apps/contacts/#uri">Details</a></span></li>'
 			+ '    </ul>'
@@ -51,7 +51,7 @@
 	 */
 	var Contact = OC.Backbone.Model.extend({
 		defaults: {
-			displayName: '',
+			fullName: '',
 			lastMessage: '',
 			actions: []
 		}
@@ -85,7 +85,6 @@
 		 */
 		render: function() {
 			var self = this;
-			console.log('render contacts list', self._collection);
 			self.$el.html('');
 
 			self._collection.forEach(function(contact) {
@@ -146,7 +145,7 @@
 			}));
 			this.delegateEvents();
 
-			this.$('.avatar').imageplaceholder(this._model.get('displayName', 'displayName'));
+			this.$('.avatar').imageplaceholder(this._model.get('fullName'));
 
 			return this;
 		},

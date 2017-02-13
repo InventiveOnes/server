@@ -22,39 +22,40 @@
  *
  */
 
-namespace OC\Core\Controller;
+namespace OC\Contacts\ContactsMenu;
 
-use OC\Contacts\ContactsMenu\Manager;
-use OCP\AppFramework\Controller;
-use OCP\AppFramework\Http\JSONResponse;
-use OCP\IRequest;
+use OC\Contacts\ContactsMenu\Actions\EMailAction;
+use OCP\Contacts\ContactsMenu\IEntry;
 
-class ContactsMenuController extends Controller {
+class Manager {
 
-	/** @var Manager */
-	private $manager;
+	/** @var ContactsStore */
+	private $store;
 
-	/** @var string */
-	private $userId;
-
-	/**
-	 * @param IRequest $request
-	 * @param string $UserId
-	 */
-	public function __construct(IRequest $request, $UserId, Manager $manager) {
-		parent::__construct('core', $request);
-		$this->userId = $UserId;
-		$this->manager = $manager;
+	public function __construct(ContactsStore $store) {
+		$this->store = $store;
 	}
 
 	/**
-	 * @NoAdminRequired
-	 *
-	 * @param int $page
-	 * @return JSONResponse
+	 * @param string $userId
+	 * @return IEntry[]
 	 */
-	public function index($page = 0) {
-		return $this->manager->getEntries($this->userId);
+	public function getEntries($userId) {
+		$entries = $this->store->getContacts();
+
+		// TODO: contacts manager does not need a user id
+		// TODO: extract to providers
+		foreach ($entries as $entry) {
+			foreach ($entry->getEMailAddresses() as $address) {
+				$action = new EMailAction();
+				$action->setName('Mail'); // TODO: l10n
+				$action->setIcon('icon-mail'); // TODO: absolute path
+				$action->setHref('mailto:' . urlencode($address)); // TODO: meaningful URL
+				$entry->addAction($action);
+			}
+		}
+
+		return $entries;
 	}
 
 }
