@@ -32,7 +32,8 @@
 			+ '</div>';
 	var CONTENT_TEMPLATE = ''
 			+ '<div>'
-			+ '    <input id="contactsmenu-search" type="search" placeholder="Search contacts …">'
+			+ '    <input id="contactsmenu-search" type="search" placeholder="Search contacts …" value="{{searchTerm}}">'
+			+ '    {{#unless contacts.length}}<div class="emptycontent">' + t('core', 'No contacts found.') + '</div>{{/unless}}'
 			+ '    <div id="contactsmenu-contacts"></div>'
 			+ '</div>';
 	var CONTACT_TEMPLATE = ''
@@ -226,12 +227,14 @@
 
 		/**
 		 * @param {Backbone.Collection} contacts
+		 * @param {string} searchTerm
 		 * @returns {undefined}
 		 */
-		showContacts: function(contacts) {
+		showContacts: function(contacts, searchTerm) {
 			this._contacts = contacts;
 			this.render({
 				loading: false,
+				searchTerm: searchTerm,
 				contacts: contacts
 			});
 		},
@@ -341,7 +344,7 @@
 				self._contactsPromise = self._getContacts(searchTerm);
 			}
 
-			if (_.isUndefined(searchTerm)) {
+			if (_.isUndefined(searchTerm) || searchTerm === '') {
 				self._view.showLoading(t('core', 'Loading your contacts …'));
 			} else {
 				self._view.showLoading(t('core', 'Looking for {term} …', {
@@ -349,7 +352,7 @@
 				}));
 			}
 			self._contactsPromise.then(function(contacts) {
-				self._view.showContacts(contacts);
+				self._view.showContacts(contacts, searchTerm);
 			}, function(e) {
 				console.error('could not load contacts', e);
 			}).then(function() {
